@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نشمي — نقطة البيع</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#c9a84c;--gold-dim:#8a6b28;--dark:#0d0a07;--dark2:#141008;--dark3:#1c1510;--dark4:#241a10;--border:rgba(201,168,76,.18);--white:#fff8ed;--sub:#a08060;--green:#4caf7d;--red:#e05555;--blue:#5599cc}
+*{margin:0;padding:0;box-sizing:border-box}html,body{height:100%;overflow:hidden}
+body{background:var(--dark);color:var(--white);font-family:'Tajawal',sans-serif;display:flex;flex-direction:column}
+.topbar{height:52px;background:var(--dark2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0}
+.topbar img{width:36px;height:36px;border-radius:50%;object-fit:cover}
+.topbar-title{font-family:'Playfair Display',serif;font-size:16px;color:var(--gold)}
+.user-badge{margin-right:auto;display:flex;align-items:center;gap:8px;font-size:12px}
+.role-chip{padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;background:rgba(201,168,76,.15);color:var(--gold);border:1px solid var(--border)}
+.day-dot{width:8px;height:8px;border-radius:50%;background:var(--red)}
+.day-dot.open{background:var(--green)}
+.btn-sm{padding:5px 12px;border-radius:7px;font-family:'Tajawal',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all .2s}
+.btn-logout{background:transparent;border:1px solid rgba(224,85,85,.3);color:var(--red)}
+.layout{display:flex;flex:1;overflow:hidden}
+.left{flex:1;display:flex;flex-direction:column;overflow:hidden;padding:12px}
+.right{width:290px;background:var(--dark3);border-right:1px solid var(--border);display:flex;flex-direction:column}
+.cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.cat-chip{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--sub);transition:all .2s;font-family:'Tajawal',sans-serif}
+.cat-chip.active,.cat-chip:hover{background:var(--gold);color:#1a1000;border-color:var(--gold)}
+.items-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;overflow-y:auto;flex:1}
+.item-card{background:var(--dark3);border:1px solid var(--border);border-radius:10px;padding:10px 8px;text-align:center;cursor:pointer;transition:all .2s;user-select:none}
+.item-card:hover{border-color:var(--gold);background:rgba(201,168,76,.08);transform:translateY(-2px)}
+.item-card.sold-out{opacity:.4;pointer-events:none}
+.item-icon{font-size:24px;margin-bottom:5px}
+.item-name{font-size:11px;font-weight:700;color:var(--white);margin-bottom:3px;line-height:1.2}
+.item-price{font-size:12px;color:var(--gold);font-weight:700}
+.cart-hd{padding:12px 14px;border-bottom:1px solid var(--border);font-weight:700;color:var(--gold);font-size:13px;display:flex;align-items:center;gap:6px}
+.cart-body{flex:1;overflow-y:auto;padding:8px}
+.cart-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--sub);gap:6px;font-size:13px}
+.cart-row{display:flex;align-items:center;gap:6px;padding:6px 4px;border-bottom:1px solid rgba(201,168,76,.06);font-size:12px}
+.cart-name{flex:1;font-weight:600;line-height:1.2}
+.qty-btn{width:20px;height:20px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--gold);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center}
+.qty-btn:hover{background:var(--gold);color:#1a1000}
+.cart-price{color:var(--gold);font-weight:700;min-width:44px;text-align:left}
+.cart-ft{padding:12px 14px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px}
+.total-row{display:flex;justify-content:space-between;font-size:15px;font-weight:700}
+.total-val{color:var(--gold);font-family:'Playfair Display',serif}
+.pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.pay-btn{padding:6px 4px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--sub);font-size:11px;cursor:pointer;font-family:'Tajawal',sans-serif;font-weight:700;transition:all .2s}
+.pay-btn.sel{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.1)}
+.tbl-row{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--sub)}
+.tbl-row input{background:var(--dark4);border:1px solid var(--border);border-radius:7px;padding:5px 8px;color:var(--white);font-family:'Tajawal',sans-serif;font-size:12px;width:60px;outline:none}
+.tbl-row input:focus{border-color:var(--gold)}
+.full-inp{flex:1;background:var(--dark4);border:1px solid var(--border);border-radius:7px;padding:6px 10px;color:var(--white);font-family:'Tajawal',sans-serif;font-size:12px;outline:none;width:100%}
+.full-inp:focus{border-color:var(--gold)}
+.btn-confirm{padding:11px;border-radius:9px;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;cursor:pointer;border:none;background:linear-gradient(135deg,var(--gold),var(--gold-dim));color:#1a1000;width:100%;transition:filter .2s}
+.btn-confirm:hover{filter:brightness(1.1)}
+.btn-confirm:disabled{opacity:.5;cursor:not-allowed}
+.acc-sel{width:100%;background:var(--dark4);border:1px solid var(--border);border-radius:7px;padding:6px 10px;color:var(--white);font-family:'Tajawal',sans-serif;font-size:12px;outline:none}
+.acc-sel:focus{border-color:var(--gold)}
+#toast{position:fixed;bottom:16px;left:16px;z-index:999;display:flex;flex-direction:column;gap:6px}
+.toast{padding:10px 16px;border-radius:9px;font-size:12px;font-weight:700;animation:sIn .3s ease;max-width:240px}
+.tok{background:rgba(76,175,125,.2);border:1px solid rgba(76,175,125,.4);color:#7de0aa}
+.terr{background:rgba(224,85,85,.2);border:1px solid rgba(224,85,85,.4);color:#f09090}
+@keyframes sIn{from{transform:translateX(-16px);opacity:0}to{transform:none;opacity:1}}
+.day-bar{padding:6px 12px;font-size:11px;font-weight:700;text-align:center}
+.day-bar.open{background:rgba(76,175,125,.1);color:var(--green)}
+.day-bar.closed{background:rgba(224,85,85,.1);color:var(--red)}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <img src="/static/logo.jpg" alt="نشمي" onerror="this.style.display='none'">
+  <div class="topbar-title">نشمي كافيه</div>
+  <div class="user-badge">
+    <span id="userName" style="color:var(--sub)"></span>
+    <span class="role-chip" id="userRole"></span>
+    <div class="day-dot" id="dayDot"></div>
+    <button class="btn-sm btn-logout" onclick="logout()">خروج</button>
+  </div>
+</div>
+<div class="day-bar closed" id="dayBar">اليوم مغلق — التواصل مع المدير لفتح اليوم</div>
+<div class="layout">
+  <div class="left">
+    <div class="cats" id="cats"></div>
+    <div class="items-grid" id="itemsGrid"></div>
+  </div>
+  <div class="right">
+    <div class="cart-hd">&#128722; السلة <span id="cartCount" style="color:var(--sub);font-size:11px"></span></div>
+    <div class="cart-body" id="cartBody"><div class="cart-empty"><span style="font-size:28px">&#128722;</span>السلة فارغة</div></div>
+    <div class="cart-ft">
+      <div class="tbl-row">
+        <label>طاولة</label><input type="number" id="tableNum" placeholder="رقم" min="1">
+        <input class="full-inp" type="text" id="custName" placeholder="اسم الزبون (اختياري)">
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--sub);margin-bottom:5px">طريقة الدفع</div>
+        <div class="pay-grid">
+          <button class="pay-btn sel" data-p="cash" onclick="setPay(this)">&#128184; كاش</button>
+          <button class="pay-btn" data-p="cliq" onclick="setPay(this)">&#128247; كليك</button>
+          <button class="pay-btn" data-p="account" onclick="setPay(this)" style="grid-column:span 2">&#128196; ذمة</button>
+        </div>
+        <select id="accSel" class="acc-sel" style="display:none;margin-top:6px"><option value="">اختر الحساب</option></select>
+      </div>
+      <div class="total-row"><span>المجموع</span><span class="total-val"><span id="total">0.000</span> <small style="font-size:11px;color:var(--sub)">د.أ</small></span></div>
+      <button class="btn-confirm" id="confirmBtn" onclick="submitOrder()">&#10003; تأكيد الطلب</button>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+<script>
+var cats=[],items=[],cart=[],payMethod='cash',accounts=[];
+function init(){
+  fetch('/api/auth/me').then(r=>r.json()).then(d=>{
+    if(!d.loggedIn){location.href='/login';return;}
+    document.getElementById('userName').textContent=d.user.name;
+    document.getElementById('userRole').textContent=d.user.nameEn;
+  });
+  Promise.all([fetch('/api/categories').then(r=>r.json()),fetch('/api/items').then(r=>r.json()),fetch('/api/daily/today').then(r=>r.json())])
+  .then(([c,it,day])=>{
+    cats=c;items=it;
+    updateDayStatus(day);
+    buildCats();renderItems();
+    fetch('/api/accounts').then(r=>r.json()).then(a=>{accounts=a;buildAccSel();}).catch(()=>{});
+  });
+}
+function updateDayStatus(rec){
+  var bar=document.getElementById('dayBar'),dot=document.getElementById('dayDot');
+  if(rec&&rec.status==='open'){
+    bar.className='day-bar open';bar.textContent='اليوم مفتوح ✓ — جاهز للطلبات';
+    dot.className='day-dot open';
+  }else{bar.className='day-bar closed';dot.className='day-dot';}
+}
+var activeCat=null;
+function buildCats(){
+  document.getElementById('cats').innerHTML='<button class="cat-chip active" onclick="filterCat(null,this)">الكل</button>'
+    +cats.map(c=>`<button class="cat-chip" onclick="filterCat(${c.id},this)">${c.icon} ${c.name_ar}</button>`).join('');
+}
+function filterCat(id,btn){
+  activeCat=id;
+  document.querySelectorAll('.cat-chip').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');renderItems();
+}
+function getIcon(catId){var c=cats.find(x=>x.id===catId);return c?c.icon:'☕';}
+function renderItems(){
+  var list=activeCat?items.filter(i=>i.category_id===activeCat):items;
+  document.getElementById('itemsGrid').innerHTML=list.map(it=>
+    `<div class="item-card${it.is_available?'':' sold-out'}" onclick="addToCart(${it.id})">
+      <div class="item-icon">${getIcon(it.category_id)}</div>
+      <div class="item-name">${it.name_ar}</div>
+      <div class="item-price">${it.price.toFixed(3)}</div>
+    </div>`
+  ).join('');
+}
+function addToCart(id){
+  var it=items.find(i=>i.id===id);if(!it||!it.is_available)return;
+  var ex=cart.find(c=>c.item_id===id);
+  if(ex)ex.quantity++;else cart.push({item_id:it.id,item_name:it.name_ar,unit_price:it.price,quantity:1});
+  renderCart();
+}
+function changeQty(idx,d){cart[idx].quantity+=d;if(cart[idx].quantity<=0)cart.splice(idx,1);renderCart();}
+function renderCart(){
+  var n=cart.reduce((s,c)=>s+c.quantity,0);
+  document.getElementById('cartCount').textContent=n?`(${n})`: '';
+  if(!cart.length){document.getElementById('cartBody').innerHTML='<div class="cart-empty"><span style="font-size:28px">&#128722;</span>السلة فارغة</div>';document.getElementById('total').textContent='0.000';return;}
+  var tot=cart.reduce((s,c)=>s+c.quantity*c.unit_price,0);
+  document.getElementById('total').textContent=tot.toFixed(3);
+  document.getElementById('cartBody').innerHTML=cart.map((c,i)=>
+    `<div class="cart-row">
+      <div class="cart-name">${c.item_name}</div>
+      <div style="display:flex;align-items:center;gap:4px">
+        <button class="qty-btn" onclick="changeQty(${i},-1)">-</button>
+        <span style="font-size:12px;min-width:14px;text-align:center">${c.quantity}</span>
+        <button class="qty-btn" onclick="changeQty(${i},1)">+</button>
+      </div>
+      <div class="cart-price">${(c.quantity*c.unit_price).toFixed(3)}</div>
+    </div>`
+  ).join('');
+}
+function setPay(btn){
+  payMethod=btn.dataset.p;
+  document.querySelectorAll('.pay-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  document.getElementById('accSel').style.display=payMethod==='account'?'block':'none';
+}
+function buildAccSel(){
+  var sel=document.getElementById('accSel');
+  sel.innerHTML='<option value="">اختر الحساب</option>'+accounts.map(a=>`<option value="${a.id}">${a.customer_name} — ${a.total_debt.toFixed(3)}</option>`).join('');
+}
+function submitOrder(){
+  if(!cart.length){toast('السلة فارغة','err');return;}
+  if(payMethod==='account'&&!document.getElementById('accSel').value){toast('اختر حساب الذمة','err');return;}
+  var btn=document.getElementById('confirmBtn');btn.disabled=true;
+  fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({items:cart,payment_method:payMethod,table_number:document.getElementById('tableNum').value||null,
+      customer_name:document.getElementById('custName').value,account_id:document.getElementById('accSel').value?parseInt(document.getElementById('accSel').value):null,source:'pos'})})
+  .then(r=>r.json()).then(d=>{
+    if(d.success){toast(`✓ طلب #${d.order_id} — ${d.total.toFixed(3)} د.أ`);cart=[];renderCart();document.getElementById('tableNum').value='';document.getElementById('custName').value='';}
+    else toast(d.message,'err');
+    btn.disabled=false;
+  }).catch(()=>{toast('خطأ في الاتصال','err');btn.disabled=false;});
+}
+function logout(){fetch('/api/auth/logout',{method:'POST'}).then(()=>location.href='/login');}
+function toast(msg,t='ok'){
+  var el=document.createElement('div');el.className='toast '+(t==='err'?'terr':'tok');el.textContent=msg;
+  document.getElementById('toast').appendChild(el);setTimeout(()=>el.remove(),3000);
+}
+init();
+</script>
+</body>
+</html>

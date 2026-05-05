@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نشمي كافيه — تسجيل الدخول</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Tajawal:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#0d0a07;display:flex;align-items:center;justify-content:center;font-family:'Tajawal',sans-serif;
+  background-image:radial-gradient(ellipse at 30% 20%,rgba(201,168,76,.1) 0%,transparent 60%),radial-gradient(ellipse at 70% 80%,rgba(201,168,76,.07) 0%,transparent 60%)}
+.card{background:#1a1410;border:1px solid rgba(201,168,76,.25);border-radius:20px;padding:40px 36px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.logo{text-align:center;margin-bottom:28px}
+.logo img{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,.4);margin-bottom:12px;display:block;margin:0 auto 12px}
+.logo-fallback{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#8a6b28);display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 12px}
+.logo h1{font-family:'Playfair Display',serif;font-size:22px;color:#c9a84c;margin-bottom:4px}
+.logo p{font-size:12px;color:#8a6b28}
+.hint{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:12px;margin-bottom:20px;font-size:12px;color:#a08060}
+.hint p{margin-bottom:4px;display:flex;justify-content:space-between}
+.hint strong{color:#c9a84c}
+.form-group{margin-bottom:16px}
+label{display:block;font-size:12px;color:#a08060;margin-bottom:6px}
+input{width:100%;background:#241a10;border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:12px 16px;color:#fff8ed;font-family:'Tajawal',sans-serif;font-size:16px;letter-spacing:4px;text-align:center;outline:none;transition:border-color .2s}
+input:focus{border-color:#c9a84c}
+input::placeholder{letter-spacing:0;font-size:13px}
+.btn{width:100%;padding:13px;background:linear-gradient(135deg,#c9a84c,#8a6b28);border:none;border-radius:10px;color:#1a1000;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:filter .2s;margin-top:4px}
+.btn:hover{filter:brightness(1.1)}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.error{background:rgba(224,85,85,.15);border:1px solid rgba(224,85,85,.3);color:#f09090;border-radius:8px;padding:10px 14px;font-size:13px;text-align:center;margin-top:12px;display:none}
+.spinning{display:inline-block;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <img src="/static/logo.jpg" alt="نشمي" onerror="this.style.display='none';document.getElementById('lf').style.display='flex'">
+    <div class="logo-fallback" id="lf" style="display:none">☕</div>
+    <h1>نشمي كافيه</h1>
+    <p>DEV COFFEE SHOP</p>
+  </div>
+
+  <div class="hint">
+    <p><span>أبو نشمي (مالك)</span><strong>1234</strong></p>
+    <p><span>نشمي (مدير)</span><strong>5555</strong></p>
+    <p><span>عمر (موظف)</span><strong>9999</strong></p>
+    <p><span>ناصر (موظف)</span><strong>0000</strong></p>
+  </div>
+
+  <div class="form-group">
+    <label>كلمة المرور</label>
+    <input type="password" id="pw" placeholder="أدخل كلمة المرور" maxlength="10" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()">
+  </div>
+  <button class="btn" id="loginBtn" onclick="login()">دخول &#10230;</button>
+  <div class="error" id="errMsg"></div>
+</div>
+
+<script>
+function login(){
+  var pw=document.getElementById('pw').value.trim();
+  if(!pw)return;
+  var btn=document.getElementById('loginBtn');
+  btn.disabled=true;
+  btn.innerHTML='<span class="spinning">&#9696;</span> جارٍ التحقق...';
+  fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw})})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(d.success){window.location.href=d.redirect;}
+    else{
+      document.getElementById('errMsg').textContent=d.message||'كلمة مرور غير صحيحة';
+      document.getElementById('errMsg').style.display='block';
+      btn.disabled=false;btn.innerHTML='دخول &#10230;';
+      document.getElementById('pw').value='';document.getElementById('pw').focus();
+    }
+  }).catch(function(){
+    btn.disabled=false;btn.innerHTML='دخول &#10230;';
+    document.getElementById('errMsg').textContent='خطأ في الاتصال';
+    document.getElementById('errMsg').style.display='block';
+  });
+}
+document.getElementById('pw').focus();
+</script>
+</body>
+</html>

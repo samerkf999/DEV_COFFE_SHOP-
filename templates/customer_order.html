@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>نشمي كافيه — اطلب الآن</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Tajawal:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#c9a84c;--gold-dim:#8a6b28;--gold-faint:rgba(201,168,76,.08);--dark:#0d0a07;--dark2:#141008;--dark3:#1c1510;--dark4:#241a10;--wood:#2d2118;--white:#fff8ed;--sub:#b89a6a;--green:#4caf7d;--red:#e05555}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{background:var(--dark);color:var(--white);font-family:'Tajawal',sans-serif;min-height:100vh;padding-bottom:120px;background-image:radial-gradient(ellipse at 20% 0%,rgba(201,168,76,.06) 0%,transparent 50%)}
+
+/* Header */
+.header{position:sticky;top:0;z-index:100;background:rgba(13,10,7,.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,168,76,.15);padding:10px 16px}
+.hinner{max-width:700px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px}
+.logo img{width:38px;height:38px;border-radius:50%;object-fit:cover;box-shadow:0 0 12px rgba(201,168,76,.3)}
+.logo-txt{font-family:'Playfair Display',serif;font-size:17px;color:var(--gold)}
+.logo-sub{font-size:10px;color:var(--sub);margin-top:1px}
+.cart-fab{display:flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--gold),var(--gold-dim));padding:7px 14px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:700;color:#1a1000;border:none;font-family:'Tajawal',sans-serif;transition:filter .2s}
+.cart-fab:hover{filter:brightness(1.1)}
+.cart-count{background:#1a1000;color:var(--gold);width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+
+/* Cats nav */
+.cats-nav{position:sticky;top:59px;z-index:99;background:var(--dark2);border-bottom:1px solid rgba(201,168,76,.1);overflow-x:auto;scrollbar-width:none}
+.cats-nav::-webkit-scrollbar{display:none}
+.cats-inner{display:flex;padding:0 12px;min-width:max-content;max-width:700px;margin:0 auto}
+.cat-btn{padding:10px 16px;border:none;background:transparent;color:var(--sub);font-family:'Tajawal',sans-serif;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;display:flex;align-items:center;gap:5px}
+.cat-btn:hover{color:var(--gold)}.cat-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* Content */
+.content{max-width:700px;margin:0 auto;padding:16px}
+.section{padding-top:20px;animation:fadeUp .35s ease both}
+.section-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(201,168,76,.12)}
+.section-icon{width:36px;height:36px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.section-title{font-family:'Playfair Display',serif;font-size:18px;color:var(--gold)}
+.items-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:500px){.items-grid{grid-template-columns:repeat(3,1fr)}}
+
+.item-card{background:var(--dark3);border:1px solid rgba(201,168,76,.1);border-radius:12px;overflow:hidden;transition:all .2s;position:relative}
+.item-card:hover{border-color:rgba(201,168,76,.3);box-shadow:0 6px 24px rgba(0,0,0,.4)}
+.item-card.unavail{opacity:.4;pointer-events:none}
+.item-thumb{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.item-placeholder{width:100%;aspect-ratio:4/3;background:linear-gradient(135deg,var(--wood),#1a1209);display:flex;align-items:center;justify-content:center;font-size:32px}
+.item-body{padding:10px}
+.item-name{font-size:13px;font-weight:700;margin-bottom:3px;line-height:1.3}
+.item-desc{font-size:10px;color:var(--sub);line-height:1.4;margin-bottom:7px;min-height:14px}
+.item-footer{display:flex;align-items:center;justify-content:space-between}
+.item-price{font-size:14px;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif}
+.add-btn{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-dim));border:none;color:#1a1000;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .2s;line-height:1}
+.add-btn:hover{transform:scale(1.15)}
+.in-cart{position:absolute;top:6px;right:6px;background:var(--gold);color:#1a1000;border-radius:12px;font-size:10px;font-weight:700;padding:2px 7px}
+
+/* Cart Panel */
+.cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:flex;align-items:flex-end;justify-content:center;padding:0;opacity:0;pointer-events:none;transition:opacity .3s}
+.cart-overlay.open{opacity:1;pointer-events:all}
+.cart-panel{background:var(--dark3);border-radius:20px 20px 0 0;border-top:1px solid rgba(201,168,76,.2);width:100%;max-width:700px;max-height:85vh;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s ease}
+.cart-overlay.open .cart-panel{transform:none}
+.cart-hd{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(201,168,76,.12)}
+.cart-title{font-family:'Playfair Display',serif;font-size:16px;color:var(--gold)}
+.cart-close{background:transparent;border:none;color:var(--sub);font-size:22px;cursor:pointer;line-height:1}
+.cart-body{flex:1;overflow-y:auto;padding:12px 16px}
+.cart-empty-msg{text-align:center;padding:30px;color:var(--sub);font-size:13px}
+.cart-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(201,168,76,.06);font-size:13px}
+.cart-row:last-child{border-bottom:none}
+.cname{flex:1;font-weight:600}
+.qty-btns{display:flex;align-items:center;gap:5px}
+.qbtn{width:22px;height:22px;border-radius:50%;border:1px solid rgba(201,168,76,.25);background:transparent;color:var(--gold);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.qbtn:hover{background:var(--gold);color:#1a1000}
+.cprice{color:var(--gold);font-weight:700;min-width:48px;text-align:left}
+.cart-ft{padding:14px 16px;border-top:1px solid rgba(201,168,76,.12)}
+.total-row{display:flex;justify-content:space-between;font-size:15px;font-weight:700;margin-bottom:12px}
+.total-val{color:var(--gold);font-family:'Playfair Display',serif}
+.form-sec{margin-bottom:12px}
+.form-sec label{font-size:11px;color:var(--sub);display:block;margin-bottom:4px}
+.form-sec input,.form-sec select{background:var(--dark4);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:9px 12px;color:var(--white);font-family:'Tajawal',sans-serif;font-size:13px;outline:none;width:100%}
+.form-sec input:focus,.form-sec select:focus{border-color:var(--gold)}
+.pay-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px}
+.pbtn{padding:7px;border-radius:8px;border:1px solid rgba(201,168,76,.2);background:transparent;color:var(--sub);font-size:12px;font-family:'Tajawal',sans-serif;font-weight:700;cursor:pointer;transition:all .2s}
+.pbtn.sel{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.1)}
+.submit-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--gold),var(--gold-dim));border:none;border-radius:11px;color:#1a1000;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:filter .2s}
+.submit-btn:hover{filter:brightness(1.1)}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* Success */
+.success-screen{position:fixed;inset:0;background:var(--dark);z-index:300;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
+.success-screen.show{display:flex}
+.success-icon{font-size:64px;margin-bottom:16px;animation:pop .5s ease}
+.success-title{font-family:'Playfair Display',serif;font-size:26px;color:var(--gold);margin-bottom:8px}
+.success-sub{font-size:14px;color:var(--sub);margin-bottom:24px}
+.success-order{font-size:28px;font-weight:700;color:var(--white);font-family:'Playfair Display',serif;margin-bottom:4px}
+.btn-new{padding:12px 28px;background:var(--gold);border:none;border-radius:10px;color:#1a1000;font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px;gap:12px}
+.spinner{width:36px;height:36px;border:3px solid rgba(201,168,76,.2);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.alert-info{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:9px;padding:12px 14px;font-size:13px;color:var(--sub);text-align:center;margin:12px 0}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="hinner">
+    <div class="logo">
+      <img src="/static/logo.jpg" alt="نشمي" onerror="this.style.display='none'">
+      <div>
+        <div class="logo-txt" id="cafeName">نشمي كافيه</div>
+        <div class="logo-sub">اطلب مباشرة من طاولتك</div>
+      </div>
+    </div>
+    <button class="cart-fab" onclick="openCart()">
+      &#128722; السلة
+      <span class="cart-count" id="cartCountBadge">0</span>
+    </button>
+  </div>
+</header>
+
+<nav class="cats-nav"><div class="cats-inner" id="catsInner"></div></nav>
+
+<main class="content" id="mainContent">
+  <div class="loading"><div class="spinner"></div><span style="color:var(--sub);font-size:13px">جارٍ تحميل القائمة...</span></div>
+</main>
+
+<!-- Cart -->
+<div class="cart-overlay" id="cartOverlay" onclick="if(event.target===this)closeCart()">
+  <div class="cart-panel">
+    <div class="cart-hd">
+      <span class="cart-title">&#128722; طلبك</span>
+      <button class="cart-close" onclick="closeCart()">&#10005;</button>
+    </div>
+    <div class="cart-body" id="cartBody"></div>
+    <div class="cart-ft">
+      <div class="total-row"><span>الإجمالي</span><span class="total-val"><span id="cartTotalVal">0.000</span> <small style="font-size:11px;color:var(--sub)">د.أ</small></span></div>
+      <div class="form-sec"><label>رقم الطاولة *</label><input type="number" id="tableNum" placeholder="أدخل رقم الطاولة" min="1"></div>
+      <div class="form-sec"><label>اسمك (اختياري)</label><input type="text" id="custName" placeholder="اسمك"></div>
+      <div class="form-sec">
+        <label>طريقة الدفع</label>
+        <div class="pay-row">
+          <button class="pbtn sel" data-p="cash" onclick="setPay(this)">&#128184; كاش</button>
+          <button class="pbtn" data-p="cliq" onclick="setPay(this)">&#128247; كليك</button>
+        </div>
+      </div>
+      <div id="dayAlert" class="alert-info" style="display:none">&#9888; اليوم غير مفتوح حالياً — تواصل مع الموظف</div>
+      <button class="submit-btn" id="orderBtn" onclick="submitOrder()">&#10003; أرسل الطلب</button>
+    </div>
+  </div>
+</div>
+
+<!-- Success -->
+<div class="success-screen" id="successScreen">
+  <div class="success-icon">&#10003;</div>
+  <div class="success-title">تم استلام طلبك!</div>
+  <div class="success-sub">رقم طلبك</div>
+  <div class="success-order" id="successOrderId">#—</div>
+  <div class="success-sub" id="successTotal" style="margin-top:4px"></div>
+  <button class="btn-new" onclick="resetOrder()">&#43; طلب جديد</button>
+</div>
+
+<script>
+var CATS=[],ITEMS={},CATS_LIST=[],cart=[],payMethod='cash',dayOpen=false;
+var fmt=n=>parseFloat(n||0).toFixed(3);
+
+function init(){
+  Promise.all([
+    fetch('/api/settings').then(r=>r.json()),
+    fetch('/api/categories').then(r=>r.json()),
+    fetch('/api/items').then(r=>r.json()),
+    fetch('/api/daily/today').then(r=>r.json())
+  ]).then(([s,cats,items,day])=>{
+    document.getElementById('cafeName').textContent=s.cafe_name||'نشمي كافيه';
+    document.title=(s.cafe_name||'نشمي كافيه')+' — اطلب الآن';
+    CATS_LIST=cats;
+    items.forEach(it=>{if(!ITEMS[it.category_id])ITEMS[it.category_id]=[];ITEMS[it.category_id].push(it);});
+    dayOpen=day&&day.status==='open';
+    if(!dayOpen)document.getElementById('dayAlert').style.display='block';
+    buildNav();buildContent();setupSpy();
+  }).catch(()=>{
+    document.getElementById('mainContent').innerHTML='<div class="loading"><p style="color:var(--red)">&#9888; تعذّر تحميل القائمة</p></div>';
+  });
+}
+
+function buildNav(){
+  document.getElementById('catsInner').innerHTML=CATS_LIST.map((c,i)=>
+    `<button class="cat-btn${i===0?' active':''}" onclick="scrollTo_('sec-'+${c.id})" data-cat="${c.id}">${c.icon} ${c.name_ar}</button>`
+  ).join('');
+}
+
+function buildContent(){
+  var cur='د.أ';
+  document.getElementById('mainContent').innerHTML=CATS_LIST.map((c,idx)=>{
+    var its=ITEMS[c.id]||[];if(!its.length)return'';
+    var cards=its.map(it=>{
+      var img=it.image_path?`<img class="item-thumb" src="${it.image_path}" alt="${it.name_ar}" loading="lazy">`:
+        `<div class="item-placeholder">${c.icon}</div>`;
+      var u=!it.is_available;
+      return`<div class="item-card${u?' unavail':''}" id="ic-${it.id}">
+        ${img}
+        <div class="item-body">
+          <div class="item-name">${it.name_ar}</div>
+          <div class="item-desc">${it.description||''}</div>
+          <div class="item-footer">
+            <div class="item-price">${it.price.toFixed(3)}<small style="font-size:10px;color:var(--sub)"> ${cur}</small></div>
+            <button class="add-btn" onclick="addToCart(${it.id})">+</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    return`<section class="section" id="sec-${c.id}" style="animation-delay:${idx*.08}s">
+      <div class="section-hd"><div class="section-icon">${c.icon}</div><div class="section-title">${c.name_ar}</div></div>
+      <div class="items-grid">${cards}</div>
+    </section>`;
+  }).join('');
+}
+
+function addToCart(id){
+  var cat=null;var it=null;
+  for(var cid in ITEMS){var f=ITEMS[cid].find(x=>x.id===id);if(f){it=f;break;}}
+  if(!it)return;
+  var ex=cart.find(c=>c.item_id===id);
+  if(ex)ex.quantity++;else cart.push({item_id:it.id,item_name:it.name_ar,unit_price:it.price,quantity:1});
+  refreshCartBadge();
+  // bounce animation
+  var el=document.getElementById('ic-'+id);
+  if(el){el.style.transform='scale(0.95)';setTimeout(()=>{el.style.transform='';},150);}
+}
+
+function refreshCartBadge(){
+  var n=cart.reduce((s,c)=>s+c.quantity,0);
+  document.getElementById('cartCountBadge').textContent=n;
+}
+
+function openCart(){
+  renderCartBody();
+  document.getElementById('cartOverlay').classList.add('open');
+}
+function closeCart(){document.getElementById('cartOverlay').classList.remove('open');}
+
+function renderCartBody(){
+  var body=document.getElementById('cartBody');
+  if(!cart.length){body.innerHTML='<div class="cart-empty-msg"><span style="font-size:32px">&#128722;</span><br><br>سلتك فارغة<br>أضف أصنافاً من القائمة</div>';document.getElementById('cartTotalVal').textContent='0.000';return;}
+  var tot=cart.reduce((s,c)=>s+c.quantity*c.unit_price,0);
+  document.getElementById('cartTotalVal').textContent=tot.toFixed(3);
+  body.innerHTML=cart.map((c,i)=>`
+    <div class="cart-row">
+      <div class="cname">${c.item_name}</div>
+      <div class="qty-btns">
+        <button class="qbtn" onclick="changeQty(${i},-1)">-</button>
+        <span style="font-size:13px;min-width:16px;text-align:center">${c.quantity}</span>
+        <button class="qbtn" onclick="changeQty(${i},1)">+</button>
+      </div>
+      <div class="cprice">${(c.quantity*c.unit_price).toFixed(3)}</div>
+    </div>`).join('');
+  // badge on items
+  for(var cid in ITEMS){ITEMS[cid].forEach(it=>{var el=document.getElementById('ic-'+it.id);if(!el)return;var old=el.querySelector('.in-cart');if(old)old.remove();var q=cart.find(c=>c.item_id===it.id);if(q){var b=document.createElement('span');b.className='in-cart';b.textContent='×'+q.quantity;el.appendChild(b);}});}
+}
+
+function changeQty(idx,d){
+  cart[idx].quantity+=d;if(cart[idx].quantity<=0)cart.splice(idx,1);
+  refreshCartBadge();renderCartBody();
+}
+
+function setPay(btn){
+  payMethod=btn.dataset.p;
+  document.querySelectorAll('.pbtn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+function submitOrder(){
+  if(!cart.length){return;}
+  var tbl=document.getElementById('tableNum').value;
+  if(!tbl){document.getElementById('tableNum').style.borderColor='var(--red)';document.getElementById('tableNum').focus();return;}
+  document.getElementById('tableNum').style.borderColor='';
+  var btn=document.getElementById('orderBtn');btn.disabled=true;btn.textContent='جارٍ الإرسال...';
+  fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({items:cart,payment_method:payMethod,table_number:parseInt(tbl),customer_name:document.getElementById('custName').value||null,source:'customer'})})
+  .then(r=>r.json()).then(d=>{
+    if(d.success){
+      closeCart();
+      document.getElementById('successOrderId').textContent='#'+d.order_id;
+      document.getElementById('successTotal').textContent='الإجمالي: '+d.total.toFixed(3)+' د.أ';
+      document.getElementById('successScreen').classList.add('show');
+    }else{
+      btn.disabled=false;btn.textContent='&#10003; أرسل الطلب';
+      alert(d.message||'خطأ في إرسال الطلب');
+    }
+  }).catch(()=>{btn.disabled=false;btn.textContent='&#10003; أرسل الطلب';});
+}
+
+function resetOrder(){
+  cart=[];refreshCartBadge();
+  document.getElementById('successScreen').classList.remove('show');
+  document.getElementById('tableNum').value='';document.getElementById('custName').value='';
+  // remove badges
+  document.querySelectorAll('.in-cart').forEach(e=>e.remove());
+}
+
+function scrollTo_(id){var el=document.getElementById(id);if(el){var top=el.getBoundingClientRect().top+window.scrollY-115;window.scrollTo({top,behavior:'smooth'});}}
+
+function setupSpy(){
+  var secs=CATS_LIST.map(c=>document.getElementById('sec-'+c.id)).filter(Boolean);
+  var btns=document.querySelectorAll('.cat-btn');
+  var obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        var id=parseInt(e.target.id.replace('sec-',''));
+        btns.forEach(b=>b.classList.toggle('active',parseInt(b.dataset.cat)===id));
+        var ab=document.querySelector('.cat-btn.active');if(ab)ab.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'});
+      }
+    });
+  },{threshold:.2,rootMargin:'-115px 0px -60% 0px'});
+  secs.forEach(s=>obs.observe(s));
+}
+
+init();
+</script>
+</body>
+</html>
